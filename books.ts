@@ -11,9 +11,7 @@ function Book(title: string, author: string, pages: number, read: boolean) {
   this.pages = pages;
   this.read = read;
   this.info = () => {
-    return `${title} by ${author}, ${pages} pages, ${
-      read ? "read" : "not read yet"
-    };`;
+    return `${title} by ${author}, ${pages} pages, ${read ? "read" : "not read yet"};`;
   };
 }
 
@@ -34,8 +32,7 @@ const addBookButton = document.querySelector(".add-book-button");
 
 function render(library: Book[]) {
   // Remove all previously rendered elements from libraryList.
-  while (libraryList.firstChild)
-    libraryList.removeChild(libraryList.firstChild);
+  while (libraryList.firstChild) libraryList.removeChild(libraryList.firstChild);
 
   library.forEach((book, bookIndex) => {
     const bookListElement = document.createElement("li");
@@ -82,3 +79,32 @@ addBookButton.addEventListener("click", () => {
 });
 
 render(myLibrary);
+
+// Feature detect localStorage availability (takes in either 'localStorage' or 'sessionStorage').
+function localStorageAvailable(type: string) {
+  let storage: Storage;
+  try {
+    storage = window[type];
+    let x = "__storage_test__";
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    console.log(`${type} is available in the current browser session.`);
+    return true;
+  } catch (e) {
+    return (
+      e instanceof DOMException &&
+      // everything except Firefox
+      (e.code === 22 ||
+        // Firefox
+        e.code === 1014 ||
+        // test name field too, because code might not be present
+        // everything except Firefox
+        e.name === "QuotaExceededError" ||
+        // Firefox
+        e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+      // acknowledge QuotaExceededError only if there's something already stored
+      storage &&
+      storage.length !== 0
+    );
+  }
+}
