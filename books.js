@@ -91,3 +91,20 @@ function localStorageAvailable(type) {
             storage.length !== 0);
     }
 }
+const storeLibraryLocally = () => {
+    if (localStorageAvailable("localStorage")) {
+        myLibrary.forEach((book, bookIndex) => {
+            const capitalize = (string) => string[0].toUpperCase() + string.slice(1);
+            for (const property in book) {
+                if (property)
+                    localStorage.setItem(`Book${capitalize(property)}${bookIndex}`, `${book[property]}`);
+                console.log(`Book${capitalize(property)}${bookIndex} set to ${book[property]}`);
+            }
+        });
+    }
+    else {
+        console.log("localStorage is not available... :(");
+    }
+};
+const storeLibraryButton = document.querySelector(".store-library-button");
+storeLibraryButton.addEventListener("click", storeLibraryLocally);
