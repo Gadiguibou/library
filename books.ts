@@ -126,3 +126,25 @@ const storeLibraryLocally = () => {
 const storeLibraryButton = document.querySelector(".store-library-button");
 
 storeLibraryButton.addEventListener("click", storeLibraryLocally);
+
+const loadLibraryLocally = () => {
+  if (localStorageAvailable("localStorage")) {
+    myLibrary = [];
+    for (let i = 0; i < localStorage.length / 5; i++) {
+      const title = localStorage.getItem(`BookTitle${i}`);
+      const author = localStorage.getItem(`BookAuthor${i}`);
+      const pages = Number(localStorage.getItem(`BookPages${i}`));
+      const read = localStorage.getItem(`BookRead${i}`) === "true" ? true : false;
+
+      myLibrary.push(new Book(title, author, pages, read));
+      console.log(`Added book ${i} of ${localStorage.length / 5}`);
+    }
+    render(myLibrary);
+  } else {
+    console.log("localStorage is not available... :(");
+  }
+};
+
+const loadLibraryButton = document.querySelector(".load-library-button");
+
+loadLibraryButton.addEventListener("click", loadLibraryLocally);
